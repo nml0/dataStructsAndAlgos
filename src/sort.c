@@ -18,8 +18,9 @@ int main()
     for (i = 0; i < ARRAY_SIZE; i++) {
         randomNumbers[i] = rand();
     }
-
-    quickSort(randomNumbers, ARRAY_SIZE, 0, ARRAY_SIZE - 1);
+    
+    //quickSort(randomNumbers, ARRAY_SIZE, 0, ARRAY_SIZE - 1);
+    mergeSort(randomNumbers, ARRAY_SIZE);
 
 #ifdef DEBUG_ACTIVE    
     printArray(randomNumbers, ARRAY_SIZE);

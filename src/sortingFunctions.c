@@ -6,6 +6,72 @@
 #include "sortingFunctions.h"
 #include "sortingUtils.h"
 
+
+// Static functions declarations
+static void splitArray(int* arr, int n, int** arr1, int** arr2, int* size1, int* size2);
+static void merge(int* arr1, int size1, int* arr2, int size2, int* originalArray, int originalArrSize);
+
+// Static functions definitions
+static void splitArray(int* arr, int n, int** arr1, int** arr2, int* size1, int* size2) {
+    
+    // Calculate the midpoint of the array
+    int mid = n / 2;
+
+    // Allocate memory for the left and right arrays
+    *arr1  = (int*)malloc(mid * sizeof(int));
+    *arr2  = (int*)malloc((n - mid) * sizeof(int));
+    
+    // Copy elements to the left array
+    memcpy(*arr1, arr, mid * sizeof(int));
+    *size1 = mid;
+    
+    int i;
+    
+    // Copy elements to the right array
+    memcpy(*arr2, arr + mid, (n - mid) * sizeof(int));
+    *size2 = n - mid;
+    
+}
+
+static void merge(int* arr1, int size1, int* arr2, int size2, int* originalArray, int originalArrSize)
+{
+    int posArr1 = 0;
+    int posArr2 = 0;
+    int i  = 0;
+    
+    for (i = 0; i < originalArrSize; i++)
+    {
+        if((posArr1 < size1) && (posArr2 < size2))
+        {
+            if(arr1[posArr1] < arr2[posArr2])
+            {
+                originalArray[i] = arr1[posArr1];
+                posArr1++;
+            }
+            else
+            {
+                originalArray[i] = arr2[posArr2];
+                posArr2++;
+            }
+        }
+        else
+        {
+            if (posArr1 >= size1)
+            {
+                originalArray[i] = arr2[posArr2];
+                posArr2++;
+            }
+            
+            else if (posArr2 >= size2)
+            {
+                originalArray[i] = arr1[posArr1];
+                posArr1++;
+            }
+        }
+    }
+}
+
+// Public functions definitions
 void bubbleSort(int* nums, int numsSize) 
 {
   int i   = 0;
@@ -53,67 +119,6 @@ void selectionSort(int* nums, int numsSize)
     }
 }
 
-
-void splitArray(int* arr, int n, int** arr1, int** arr2, int* size1, int* size2) {
-    
-    // Calculate the midpoint of the array
-    int mid = n / 2;
-
-    // Allocate memory for the left and right arrays
-    *arr1  = (int*)malloc(mid * sizeof(int));
-    *arr2  = (int*)malloc((n - mid) * sizeof(int));
-    
-    // Copy elements to the left array
-    memcpy(*arr1, arr, mid * sizeof(int));
-    *size1 = mid;
-    
-    int i;
-    
-    // Copy elements to the right array
-    memcpy(*arr2, arr + mid, (n - mid) * sizeof(int));
-    *size2 = n - mid;
-    
-}
-
-void merge(int* arr1, int size1, int* arr2, int size2, int* originalArray, int originalArrSize)
-{
-    int posArr1 = 0;
-    int posArr2 = 0;
-    int i  = 0;
-    
-    for (i = 0; i < originalArrSize; i++)
-    {
-        if((posArr1 < size1) && (posArr2 < size2))
-        {
-            if(arr1[posArr1] < arr2[posArr2])
-            {
-                originalArray[i] = arr1[posArr1];
-                posArr1++;
-            }
-            else
-            {
-                originalArray[i] = arr2[posArr2];
-                posArr2++;
-            }
-        }
-        else
-        {
-            if (posArr1 >= size1)
-            {
-                originalArray[i] = arr2[posArr2];
-                posArr2++;
-            }
-            
-            else if (posArr2 >= size2)
-            {
-                originalArray[i] = arr1[posArr1];
-                posArr1++;
-            }
-        }
-    }
-}
-
-
 int* mergeSort(int* nums, int numsSize) 
 {
 
@@ -134,6 +139,9 @@ int* mergeSort(int* nums, int numsSize)
         mergeSort(arr2, size2);
         
         merge(arr1, size1, arr2, size2, nums, numsSize);
+
+        free(arr1);
+        free(arr2);
         return nums;
     }
 }
